@@ -26,4 +26,4 @@ Users can browse products, search, view deals, add items to the cart, and shop s
 
 ---
 
-## Project Structure
+
