@@ -12,7 +12,7 @@ function Home({ addToCart, search }) {
   // Fetch products
   useEffect(() => {
     
-      axios.get(`${process.env.REACT_APP_API_URL}/api/products/`)
+      axios.get("https://ecommerce-3-ddlr.onrender.com/api/products/")
       .then((response) => {
         setProducts(response.data);
         setLoading(false);
