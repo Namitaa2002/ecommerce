@@ -57,7 +57,7 @@ function Checkout({ cart, setCart }) {
 
     try {
       await axios.post(
-        ${process.env.REACT_APP_API_URL}/orders/create/, // use deployed backend
+        `${process.env.REACT_APP_API_URL}/orders/create/`, // use deployed backend
         orderData,
         {
           headers: {
