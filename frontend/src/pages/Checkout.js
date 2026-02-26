@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 function Checkout({ cart, setCart }) {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false); // track order submission
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -34,7 +33,6 @@ function Checkout({ cart, setCart }) {
 
   const handlePlaceOrder = async () => {
     const token = localStorage.getItem("access");
-
     if (!token) {
       toast.error("Please login first");
       navigate("/login");
@@ -46,23 +44,24 @@ function Checkout({ cart, setCart }) {
       address: formData.address,
       phone: formData.phone,
       total: totalAmount,
-      items: cart.map((item) => ({
-        product: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      })),
+      items: cart.map((item) => {
+        return {
+          product: item.id,
+          quantity: item.quantity,
+          price: item.price
+        };
+      })
     };
 
-    setLoading(true); // start loading
-
     try {
+      // Use production backend URL
       await axios.post(
-        `${process.env.REACT_APP_API_URL}/orders/create/`, // use deployed backend
+        `${process.env.REACT_APP_API_URL}/orders/create/`,
         orderData,
         {
           headers: {
-            Authorization: Bearer ${token},
-            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
           },
         }
       );
@@ -73,11 +72,7 @@ function Checkout({ cart, setCart }) {
       navigate("/order-success");
     } catch (error) {
       console.error(error.response?.data || error);
-      toast.error(
-        error.response?.data?.detail || "Something went wrong"
-      );
-    } finally {
-      setLoading(false); // stop loading
+      toast.error("Something went wrong");
     }
   };
 
@@ -89,33 +84,27 @@ function Checkout({ cart, setCart }) {
         <h5>Your cart is empty</h5>
       ) : (
         <div>
-          {/* 📝 Customer Details */}
           <input
             type="text"
             name="name"
             placeholder="Full Name"
             className="form-control mb-3"
             required
-            value={formData.name}
             onChange={handleChange}
           />
-
           <textarea
             name="address"
             placeholder="Address"
             className="form-control mb-3"
             required
-            value={formData.address}
             onChange={handleChange}
           ></textarea>
-
           <input
             type="text"
             name="phone"
             placeholder="Phone Number"
             className="form-control mb-3"
             required
-            value={formData.phone}
             onChange={handleChange}
           />
 
@@ -125,16 +114,14 @@ function Checkout({ cart, setCart }) {
               {item.name} × {item.quantity} = ₹ {item.price * item.quantity}
             </div>
           ))}
-
           <hr />
           <h4>Total: ₹ {totalAmount}</h4>
 
           <button
             onClick={handlePlaceOrder}
             className="btn btn-success mt-3 px-5 py-2 fw-bold"
-            disabled={loading}
           >
-            {loading ? "Placing Order..." : "Place Order"}
+            Place Order
           </button>
         </div>
       )}
