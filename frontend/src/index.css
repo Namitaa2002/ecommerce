@@ -1,0 +1,130 @@
+/* =========================
+   GLOBAL THEME (Soft Premium)
+========================= */
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #e6e2da;
+  color: #2c2c2c;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  background: #da8181 !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  border: none;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn-dark {
+  background: linear-gradient(135deg, #ff7a18, #ffb347);
+  border: none;
+  color: rgb(168, 151, 151);
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 10px 22px;
+  transition: all 0.3s ease;
+}
+
+.btn-dark:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(255,122,24,0.3);
+  opacity: 0.95;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+input, textarea {
+  background-color: #ffffff !important;
+  border: 1px solid #e4e4e4 !important;
+  color: #333 !important;
+  border-radius: 12px !important;
+  padding: 12px !important;
+  transition: all 0.3s ease;
+}
+
+input:focus,
+textarea:focus {
+  border: 1px solid #ff7a18 !important;
+  box-shadow: 0 0 10px rgba(255,122,24,0.2) !important;
+  outline: none;
+}
+
+/* =========================
+   PROGRESS BAR
+========================= */
+
+.progress {
+  background-color: #eee;
+  border-radius: 20px;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #ff7a18, #ffb347);
+}
+
+/* =========================
+   IMAGES
+========================= */
+
+img {
+  transition: 0.3s ease;
+  border-radius: 12px;
+}
+
+img:hover {
+  transform: scale(1.05);
+}
+
+/* =========================
+   EXTRA SMOOTH ANIMATION
+========================= */
+
+* {
+  scroll-behavior: smooth;
+}
+
+.quantity-btn {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  color: #333;
+  font-weight: bold;
+  width: 35px;
+  height: 35px;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+
+.quantity-btn:hover {
+  background: #d4af37;
+  color: white;
+  border: 1px solid #d4af37;
+}
+.card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s;
+}
