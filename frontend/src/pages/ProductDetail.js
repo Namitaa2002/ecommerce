@@ -9,15 +9,20 @@ function ProductDetail({ addToCart }) {
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    axios
-      .get(`http://127.0.0.1:8000/api/products/${id}/`)
-      .then((res) => {
-        setProduct(res.data);
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/products/${id}/`
+        );
+        setProduct(response.data);
         setLoading(false);
-      })
-      .catch(() => {
+      } catch (error) {
+        console.error("Error fetching product:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   if (loading)

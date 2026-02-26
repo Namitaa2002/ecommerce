@@ -2,27 +2,43 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/token/",
-        { username, password }
+        `${process.env.REACT_APP_API_URL}/token/`, // <-- check if this is /api/token/ on backend
+        { username, password },
+        { headers: { "Content-Type": "application/json" } }
       );
+
+      console.log("Login Response:", response.data);
 
       localStorage.setItem("access", response.data.access);
       localStorage.setItem("refresh", response.data.refresh);
 
-      alert("Registration Successful!");
-      navigate("/");
+      toast.success("Login Successful!");
+      navigate("/"); 
     } catch (error) {
-      toast.error("Invalid Credentials");
+      console.error("Login error:", error.response || error);
+
+      if (!error.response) {
+        toast.error("Cannot connect to server. Check backend URL.");
+      } else if (error.response.status === 401) {
+        toast.error("Invalid username or password");
+      } else {
+        toast.error("Login failed. Try again.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,7 +65,9 @@ function Login() {
         />
         <br /><br />
 
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </form>
     </div>
   );

@@ -12,7 +12,7 @@ function Checkout({ cart, setCart }) {
     phone: "",
   });
 
-  // 🔐 Protect Page
+  //  Protect Page
   useEffect(() => {
     const token = localStorage.getItem("access");
     if (!token) {

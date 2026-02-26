@@ -1,26 +1,27 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Carousel as BSC } from "bootstrap"; 
+import { Carousel as BSC } from "bootstrap";
 
 function Home({ addToCart, search }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const productsRef = useRef(null);
 
-  const productsRef = useRef(null); 
-
-  // Fetch products
+  // Fetch products from backend
   useEffect(() => {
-    
-      axios.get("https://ecommerce-3-ddlr.onrender.com/api/products/")
-      .then((response) => {
-        setProducts(response.data);
+    const fetchProducts = async () => {
+      try {
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/products/`);
+        console.log("Products from backend:", res.data); // Check backend data
+        setProducts(res.data);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching products:", error);
-        setLoading(false);
-      });
+      }
+    };
+    fetchProducts();
   }, []);
 
   // Initialize Bootstrap carousel
@@ -28,23 +29,23 @@ function Home({ addToCart, search }) {
     const carouselEl = document.getElementById("homeCarousel");
     if (carouselEl) {
       new BSC(carouselEl, {
-        interval: 3000, // 3 seconds per slide
+        interval: 3000,
         ride: "carousel",
       });
     }
   }, []);
 
-  const filteredProducts = products.filter((product) =>
-    product.name?.toLowerCase().includes((search || "").toLowerCase())
-  );
+  // Safe filter for search
+  const filteredProducts = products.filter((product) => {
+    if (!product.name) return false;
+    return product.name.toLowerCase().includes((search || "").toLowerCase());
+  });
 
   return (
     <div>
-
       {/* ================= HERO IMAGE CAROUSEL ================= */}
       <div id="homeCarousel" className="carousel slide mb-4" data-bs-ride="carousel">
         <div className="carousel-inner">
-
           <div className="carousel-item active">
             <img
               src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da"
@@ -57,7 +58,6 @@ function Home({ addToCart, search }) {
               <p>Up to 50% off on selected products</p>
             </div>
           </div>
-
           <div className="carousel-item">
             <img
               src="https://images.unsplash.com/photo-1523275335684-37898b6baf30"
@@ -70,10 +70,9 @@ function Home({ addToCart, search }) {
               <p>Check out the latest products</p>
             </div>
           </div>
-
           <div className="carousel-item">
             <img
-              src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f" 
+              src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f"
               className="d-block w-100"
               alt="Limited Offer"
               style={{ height: "450px", objectFit: "cover" }}
@@ -83,7 +82,6 @@ function Home({ addToCart, search }) {
               <p>Grab them before stock ends</p>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -96,7 +94,6 @@ function Home({ addToCart, search }) {
       <div className="container my-5">
         <h2 className="fw-bold text-center mb-4">Shop By Category</h2>
         <div className="row text-center g-4">
-
           <div className="col-md-3">
             <div className="card border-0 shadow-sm">
               <img
@@ -110,11 +107,10 @@ function Home({ addToCart, search }) {
               </div>
             </div>
           </div>
-
           <div className="col-md-3">
             <div className="card border-0 shadow-sm">
               <img
-                src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f" 
+                src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f"
                 className="card-img-top"
                 style={{ height: "200px", objectFit: "cover" }}
                 alt="Fashion"
@@ -124,7 +120,6 @@ function Home({ addToCart, search }) {
               </div>
             </div>
           </div>
-
           <div className="col-md-3">
             <div className="card border-0 shadow-sm">
               <img
@@ -138,7 +133,6 @@ function Home({ addToCart, search }) {
               </div>
             </div>
           </div>
-
           <div className="col-md-3">
             <div className="card border-0 shadow-sm">
               <img
@@ -152,7 +146,6 @@ function Home({ addToCart, search }) {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
@@ -161,7 +154,6 @@ function Home({ addToCart, search }) {
         <div className="bg-dark text-white text-center p-5 rounded shadow">
           <h2 className="fw-bold">Super Saver Weekend Sale 🎉</h2>
           <p>Extra 20% OFF on prepaid orders</p>
-          {/* ✅ Shop Now scrolls to Featured Products */}
           <button
             className="btn btn-warning fw-bold px-4"
             onClick={() =>
@@ -173,16 +165,6 @@ function Home({ addToCart, search }) {
         </div>
       </div>
 
-      {/* ================= DEAL OF THE DAY ================= */}
-<div className="container mb-5">
-  <div className="bg-warning p-4 rounded shadow-sm d-flex justify-content-center align-items-center">
-    <div className="text-center">
-      <h3 className="fw-bold">🔥 Deal of the Day</h3>
-      <p className="mb-0">Special discounts available only today!</p>
-    </div>
-  </div>
-</div>
-
       {/* ================= PRODUCT SECTION ================= */}
       <div className="container pb-5" ref={productsRef}>
         <h2 className="fw-bold mb-4 text-center">Featured Products</h2>
@@ -191,12 +173,15 @@ function Home({ addToCart, search }) {
           <div className="text-center py-5">
             <div className="spinner-border text-dark"></div>
           </div>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-5">
+            <h5>No products found</h5>
+          </div>
         ) : (
           <div className="row g-4">
             {filteredProducts.map((product) => (
               <div key={product.id} className="col-lg-3 col-md-4 col-sm-6">
                 <div className="card h-100 shadow-sm border-0">
-
                   <Link
                     to={`/product/${product.id}`}
                     className="text-decoration-none text-dark"
@@ -204,21 +189,18 @@ function Home({ addToCart, search }) {
                     {product.image && (
                       <div className="text-center p-4">
                         <img
-                        src={product.image}
-                        alt={product.name}
-                        style={{ height: "200px", objectFit: "contain" }}
-                        className="img-fluid"
+                          src={product.image}
+                          alt={product.name}
+                          style={{ height: "200px", objectFit: "contain" }}
+                          className="img-fluid"
                         />
                       </div>
                     )}
-
                     <div className="card-body text-center pt-0">
                       <h6 className="fw-semibold mb-2">{product.name}</h6>
-
                       <p className="text-muted small mb-2">
                         {product.description?.substring(0, 60)}...
                       </p>
-
                       <h5 className="fw-bold text-success">₹ {product.price}</h5>
                     </div>
                   </Link>
@@ -231,20 +213,12 @@ function Home({ addToCart, search }) {
                       Add to Cart
                     </button>
                   </div>
-
                 </div>
               </div>
             ))}
-
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-5">
-                <h5>No products found</h5>
-              </div>
-            )}
           </div>
         )}
       </div>
-
     </div>
   );
 }

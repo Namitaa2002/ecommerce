@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+
 function Register() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -13,13 +14,14 @@ function Register() {
 
     try {
       await axios.post(
-        "http://127.0.0.1:8000/api/register/",
+        `${process.env.REACT_APP_API_URL}/register/`,
         { username, email, password }
       );
 
       toast.success("Registration Successful!");
       navigate("/login");
     } catch (error) {
+      console.error("Registration error:", error);
       toast.error("Invalid Credentials");
     }
   };
